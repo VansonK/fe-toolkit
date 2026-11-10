@@ -71,41 +71,58 @@ async function handleInit(args: string[]) {
 
     // 4. Kredensial dan Validasi
     let token = getSecureToken(provider);
-    if (!token) {
-        console.log(`\n! ${provider === 'github' ? 'GitHub' : 'Gitea'} automation credential is not configured.\n`);
-        
+    let shouldConfigureToken = false;
+
+    if (token) {
+        console.log(`\n✓ ${provider} automation credential found.`);
+        const changeCred = await prompts({
+            type: 'confirm',
+            name: 'change',
+            message: 'Do you want to change the configured credential?',
+            initial: false
+        });
+        if (changeCred.change === undefined) process.exit(1);
+        shouldConfigureToken = changeCred.change;
+    } else {
+        console.log(`\n! ${provider} automation credential is not configured.\n`);
         const configCred = await prompts({
             type: 'confirm',
             name: 'configure',
             message: 'Configure credential now?',
             initial: true
         });
+        if (configCred.configure === undefined) process.exit(1);
+        shouldConfigureToken = configCred.configure;
+    }
 
-        if (configCred.configure) {
-            const tokenResponse = await prompts({
-                type: 'password',
-                name: 'token',
-                message: `Enter ${provider === 'github' ? 'GitHub' : 'Gitea'} access token:`
-            });
-            token = tokenResponse.token;
+    if (shouldConfigureToken) {
+        const tokenResponse = await prompts({
+            type: 'password',
+            name: 'token',
+            message: `Enter ${provider} access token:`
+        });
+        token = tokenResponse.token;
 
-            if (token) {
-                // Validasi API
-                const isValid = await validateToken(provider, token, host);
-                if (isValid) {
-                    console.log('\n✓ Credential validated');
-                    const saved = saveSecureToken(provider, token);
-                    if (saved) {
-                        logger.success('Credential stored securely');
-                    } else {
-                        logger.error('Failed to store credential securely.');
-                    }
+        if (token) {
+            // Validasi API
+            const isValid = await validateToken(provider, token, host);
+            if (isValid) {
+                console.log('\n✓ Credential validated');
+                const saved = saveSecureToken(provider, token);
+                if (saved) {
+                    logger.success('Credential stored securely');
                 } else {
-                    handleError('Credential validation failed. Please check your token and permissions.');
+                    logger.error('Failed to store credential securely.');
                 }
+            } else {
+                handleError('Credential validation failed. Please check your token and permissions.');
             }
+        } else {
+            console.log('Token configuration skipped.');
         }
     }
+
+    console.log('');
 
     console.log(''); 
 

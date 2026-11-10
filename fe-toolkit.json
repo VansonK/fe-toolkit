@@ -1,5 +1,5 @@
 {
-  "naming": "PascalCase",
+  "naming": "kebab-case",
   "featuresDirectory": "src/features",
   "includeTests": true,
   "renovateProvider": "github",
