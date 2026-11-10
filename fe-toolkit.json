@@ -1,0 +1,17 @@
+{
+  "naming": "PascalCase",
+  "featuresDirectory": "src/features",
+  "includeTests": true,
+  "renovateProvider": "github",
+  "renovateRepoUrl": "https://github.com/13522049/RenovatePlayground.git",
+  "rules": {
+    "folder-naming-kebab-case": "error",
+    "component-file-kebab-case": "error",
+    "hook-file-kebab-case": "error",
+    "util-api-file-kebab-case": "warning",
+    "style-file-kebab-case": "error",
+    "react-component-pascal-case": "error",
+    "variable-function-camel-case": "off",
+    "constant-enum-upper-snake-case": "warning"
+  }
+}

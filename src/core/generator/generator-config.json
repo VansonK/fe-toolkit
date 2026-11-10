@@ -1,0 +1,26 @@
+{
+  "features": {
+    "user-management": [
+      { "name": "components", "type": "folder" },
+      { "name": "hooks", "type": "folder" },
+      { "name": "pages", "type": "folder" },
+      { "name": "services", "type": "folder" },
+      { "name": "types", "type": "folder" },
+      { "name": "tests", "type": "folder" },
+      { "name": "index.ts", "type": "file" }
+    ],
+    "example-feature": [
+      { 
+        "name": "components", 
+        "type": "folder",
+        "children": [
+          { "name": "__name__-card.tsx", "type": "file" }
+        ]
+      },
+      { "name": "types", "type": "folder", "children": [
+        { "name": "__name__.dto.ts", "type": "file" }
+      ]},
+      { "name": "index.ts", "type": "file" }
+    ]
+  }
+}

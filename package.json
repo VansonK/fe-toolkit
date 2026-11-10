@@ -1,0 +1,32 @@
+{
+  "name": "fe-toolkit",
+  "version": "1.0.0",
+  "main": "dist/cli/index.js",
+  "bin": {
+    "fe-toolkit": "./dist/cli/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [],
+  "author": "Vanson",
+  "license": "ISC",
+  "description": "Frontend Engineering Toolkit",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/prompts": "^2.4.9",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "prompts": "^2.4.2"
+  }
+}
