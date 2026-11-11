@@ -25,6 +25,7 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "@types/prompts": "^2.4.9",
+    "fe-toolkit": "github:VansonK/fe-toolkit#main",
     "typescript": "^7.0.2"
   },
   "dependencies": {
