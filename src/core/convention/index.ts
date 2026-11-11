@@ -28,7 +28,7 @@ export const DEFAULT_RULES: Record<string, RuleSeverity> = {
     // 6. React Components (Content Check)
     'react-component-pascal-case': 'error',
     // 7. Variables / Functions (Content Check)
-    'variable-function-camel-case': 'warning', // Set to warning as regex parsing can be noisy
+    'variable-function-camel-case': 'warning', 
     // 8. Constants / Enums (Content Check)
     'constant-enum-upper-snake-case': 'warning'
 };
