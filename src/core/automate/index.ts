@@ -122,7 +122,7 @@ export function generateJenkinsfile(provider: string, repoTarget: string, host: 
     const giteaEndpoint = provider === 'gitea' ? `\n        RENOVATE_ENDPOINT = 'https://${host}/api/v1'` : '';
     return `pipeline {
     agent any
-    triggers { cron('*/5 * * * *') }
+    triggers { cron('59 23 * * *') }
     environment {
         RENOVATE_TOKEN = credentials('renovate-token-id')
         RENOVATE_PLATFORM = '${provider}'${giteaEndpoint}
