@@ -3,7 +3,7 @@ import * as path from 'path';
 
 // Load JSON config. Karena file ini dikompilasi ke dist/core/generator/index.js,
 // kita mundur 3 folder (../../..) untuk kembali ke root project, lalu masuk ke src.
-const generatorConfigPath = path.join(__dirname, '../../../src/core/generator/generator-config.json');
+const generatorConfigPath = path.join(__dirname, 'generator-config.json');
 const generatorConfig = JSON.parse(fs.readFileSync(generatorConfigPath, 'utf-8'));
 
 export interface StructureItem {
