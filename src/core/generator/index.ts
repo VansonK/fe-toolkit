@@ -1,8 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Load JSON config. Karena file ini dikompilasi ke dist/core/generator/index.js,
-// kita mundur 3 folder (../../..) untuk kembali ke root project, lalu masuk ke src.
 const generatorConfigPath = path.join(__dirname, 'generator-config.json');
 const generatorConfig = JSON.parse(fs.readFileSync(generatorConfigPath, 'utf-8'));
 
@@ -12,69 +10,80 @@ export interface StructureItem {
     children?: StructureItem[];
 }
 
-export function isValidFeatureName(name: string): boolean {
-    return /^[a-z0-9-]+$/.test(name);
-}
-
-// Utilitas untuk mengubah kebab-case menjadi format dari config
-export function formatName(name: string, naming: string): string {
-    const parts = name.toLowerCase().split('-');
-    
-    switch (naming) {
-        case 'camelCase':
-            return parts[0] + parts.slice(1).map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
-        case 'PascalCase':
-            return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
-        case 'snake_case':
-            return parts.join('_');
-        case 'kebab-case':
-        default:
-            return name;
-    }
+export function toKebabCase(name: string): string {
+    return name
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        .replace(/[\s_]+/g, '-')
+        .toLowerCase();
 }
 
 export function generateFeatureStructure(
     basePath: string, 
-    featureKey: string, 
-    formattedName: string
+    featureName: string,
+    includeTests: boolean
 ): string[] {
-    const template: StructureItem[] = generatorConfig.features[featureKey];
+    const template: StructureItem[] = generatorConfig.features["default"];
     
     if (!template) {
-        throw new Error(`Template structure for feature '${featureKey}' not found in generator-config.json`);
+        throw new Error(`Default template structure not found in generator-config.json`);
     }
 
-    const createdItems: string[] = [];
+    const outputLogs: string[] = [];
+    const testableFolders = ['api', 'components', 'hooks', 'pages', 'utils'];
 
-    // Fungsi Recursive untuk membuat folder dan file bersarang
     function build(items: StructureItem[], currentPath: string, relativeDisplayPath: string) {
         for (const item of items) {
-            // Jika template menggunakan placeholder "__name__", otomatis diubah ke casing yang benar
-            const itemName = item.name.replace(/__name__/g, formattedName);
-            
+            const itemName = item.name.replace(/__name__/g, featureName);
             const absoluteItemPath = path.join(currentPath, itemName);
             const displayPath = relativeDisplayPath ? `${relativeDisplayPath}/${itemName}` : itemName;
 
             if (item.type === 'folder') {
-                fs.mkdirSync(absoluteItemPath, { recursive: true });
-                createdItems.push(displayPath); // Catat untuk dicetak di terminal
-                
-                // Jika folder ini punya anak (nested), jalankan fungsi build lagi
+                if (!fs.existsSync(absoluteItemPath)) {
+                    fs.mkdirSync(absoluteItemPath, { recursive: true });
+                    outputLogs.push(`✓ Created folder: ${displayPath}`);
+                } else {
+                    outputLogs.push(`! Skipped folder: ${displayPath} (Already exists)`);
+                }
+
                 if (item.children && item.children.length > 0) {
                     build(item.children, absoluteItemPath, displayPath);
                 }
             } else if (item.type === 'file') {
-                fs.writeFileSync(absoluteItemPath, ''); // Buat file kosong
-                createdItems.push(displayPath);
+                if (!fs.existsSync(absoluteItemPath)) {
+                    fs.writeFileSync(absoluteItemPath, ''); 
+                    outputLogs.push(`✓ Created file:   ${displayPath}`);
+                } else {
+                    outputLogs.push(`! Skipped file:   ${displayPath} (Already exists)`);
+                }
+
+                if (includeTests) {
+                    const rootFolder = displayPath.split('/')[0] || '';
+                    if (testableFolders.includes(rootFolder)) {
+                        const extension = itemName.endsWith('.tsx') ? '.test.tsx' : '.test.ts';
+                        const baseName = itemName.substring(0, itemName.lastIndexOf('.'));
+                        const testFileName = `${baseName}${extension}`;
+                        const absoluteTestFilePath = path.join(currentPath, testFileName);
+                        const testDisplayPath = relativeDisplayPath ? `${relativeDisplayPath}/${testFileName}` : testFileName;
+
+                        if (!fs.existsSync(absoluteTestFilePath)) {
+                            fs.writeFileSync(absoluteTestFilePath, '');
+                            outputLogs.push(`✓ Created test:   ${testDisplayPath}`);
+                        } else {
+                            outputLogs.push(`! Skipped test:   ${testDisplayPath} (Already exists)`);
+                        }
+                    }
+                }
             }
         }
     }
 
-    // 1. Buat direktori utama (Root folder yang sudah di-format casingnya)
-    fs.mkdirSync(basePath, { recursive: true });
+    if (!fs.existsSync(basePath)) {
+        fs.mkdirSync(basePath, { recursive: true });
+        outputLogs.push(`✓ Created base:   src/features/${featureName}`);
+    } else {
+        outputLogs.push(`! Target folder src/features/${featureName} already exists. Continuing generation...`);
+    }
     
-    // 2. Mulai proses build recursive dari root folder
     build(template, basePath, '');
-
-    return createdItems;
+    return outputLogs;
 }

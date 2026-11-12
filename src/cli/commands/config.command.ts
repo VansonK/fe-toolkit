@@ -8,9 +8,16 @@ export function runConfigCommand(): void {
 
         console.log('\nConfiguration\n');
         
-        console.log('Naming'.padEnd(20) + config.naming);
-        console.log('Feature Directory'.padEnd(20) + config.featuresDirectory);
+        // console.log('Naming'.padEnd(20) + config.naming);
+        // console.log('Feature Directory'.padEnd(20) + config.featuresDirectory);
         console.log('Include Tests'.padEnd(20) + config.includeTests);
+        if (config.renovateProvider) {
+            console.log('Renovate Provider'.padEnd(20) + config.renovateProvider);
+        }
+        if (config.renovateRepoUrl) {
+            console.log('Renovate URL'.padEnd(20) + config.renovateRepoUrl);
+        }
+
         console.log('');
         
         logger.success('Project config retrieved successfully.');

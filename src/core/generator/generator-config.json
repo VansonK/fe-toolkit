@@ -1,26 +1,37 @@
 {
   "features": {
-    "user-management": [
-      { "name": "components", "type": "folder" },
-      { "name": "hooks", "type": "folder" },
-      { "name": "pages", "type": "folder" },
-      { "name": "services", "type": "folder" },
-      { "name": "types", "type": "folder" },
-      { "name": "tests", "type": "folder" },
-      { "name": "index.ts", "type": "file" }
-    ],
-    "example-feature": [
-      { 
-        "name": "components", 
+    "default": [
+      {
+        "name": "api",
         "type": "folder",
         "children": [
-          { "name": "__name__-card.tsx", "type": "file" }
+          { "name": "__name__.schema.ts", "type": "file" },
+          { "name": "__name__.api.ts", "type": "file" },
+          { "name": "__name__.adapter.ts", "type": "file" },
+          { "name": "__name__.queries.ts", "type": "file" }
         ]
       },
-      { "name": "types", "type": "folder", "children": [
-        { "name": "__name__.dto.ts", "type": "file" }
-      ]},
-      { "name": "index.ts", "type": "file" }
+      {
+        "name": "types",
+        "type": "folder",
+        "children": [
+          { "name": "api.type.ts", "type": "file" },
+          { "name": "view.type.ts", "type": "file" }
+        ]
+      },
+      { "name": "components", "type": "folder" },
+      { "name": "hooks", "type": "folder" },
+      {
+        "name": "pages",
+        "type": "folder",
+        "children": [
+          { "name": "__name__-page.tsx", "type": "file" }
+        ]
+      },
+      { "name": "config", "type": "folder" },
+      { "name": "utils", "type": "folder" },
+      { "name": "store", "type": "folder" },
+      { "name": "assets", "type": "folder" }
     ]
   }
 }

@@ -3,16 +3,16 @@ import * as path from 'path';
 import { logger } from '../logger';
 
 export interface FeToolkitConfig {
-    naming: string;
-    featuresDirectory: string;
+    // naming: string;
+    // featuresDirectory: string;
     includeTests: boolean;
     renovateProvider?: string;
     renovateRepoUrl?: string;
 }
 
 const defaultConfig: FeToolkitConfig = {
-    naming: 'kebab-case',
-    featuresDirectory: 'src/features',
+    // naming: 'kebab-case',
+    // featuresDirectory: 'src/features',
     includeTests: true
 };
 
@@ -32,22 +32,22 @@ export function loadConfig(): FeToolkitConfig {
 
         if (typeof userConfig === 'object' && userConfig !== null) {
             // Validate 'naming'
-            if ('naming' in userConfig) {
-                if (typeof userConfig.naming === 'string') {
-                    validatedConfig.naming = userConfig.naming;
-                } else {
-                    logger.warning(`Invalid type for 'naming' in fe-toolkit.json. Expected string. Using default: '${defaultConfig.naming}'`);
-                }
-            }
+            // if ('naming' in userConfig) {
+            //     if (typeof userConfig.naming === 'string') {
+            //         validatedConfig.naming = userConfig.naming;
+            //     } else {
+            //         logger.warning(`Invalid type for 'naming' in fe-toolkit.json. Expected string. Using default: '${defaultConfig.naming}'`);
+            //     }
+            // }
 
-            // Validate 'featuresDirectory'
-            if ('featuresDirectory' in userConfig) {
-                if (typeof userConfig.featuresDirectory === 'string') {
-                    validatedConfig.featuresDirectory = userConfig.featuresDirectory;
-                } else {
-                    logger.warning(`Invalid type for 'featuresDirectory' in fe-toolkit.json. Expected string. Using default: '${defaultConfig.featuresDirectory}'`);
-                }
-            }
+            // // Validate 'featuresDirectory'
+            // if ('featuresDirectory' in userConfig) {
+            //     if (typeof userConfig.featuresDirectory === 'string') {
+            //         validatedConfig.featuresDirectory = userConfig.featuresDirectory;
+            //     } else {
+            //         logger.warning(`Invalid type for 'featuresDirectory' in fe-toolkit.json. Expected string. Using default: '${defaultConfig.featuresDirectory}'`);
+            //     }
+            // }
 
             // Validate 'includeTests'
             if ('includeTests' in userConfig) {
