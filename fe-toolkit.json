@@ -1,7 +1,7 @@
 {
   "naming": "kebab-case",
   "featuresDirectory": "src/features",
-  "includeTests": false,
+  "includeTests": true,
   "renovateProvider": "github",
   "renovateRepoUrl": "https://github.com/13522049/RenovatePlayground.git",
   "rules": {

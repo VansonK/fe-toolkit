@@ -11,3 +11,5 @@ build/
 
 # Logs
 npm-debug.log*
+
+renovate.json
