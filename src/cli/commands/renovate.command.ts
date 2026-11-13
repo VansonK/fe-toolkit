@@ -157,7 +157,7 @@ async function handleInit(args: string[]) {
         {
             type: 'confirm',
             name: 'useSchedule',
-            message: 'Do you want to schedule Renovate? (If no, it runs on-demand)',
+            message: 'Do you want to schedule Renovate? (If no, it can run anytime)',
             initial: false
         }
     ]);
