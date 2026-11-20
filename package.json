@@ -12,9 +12,9 @@
     "dist"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "build": "tsc && copyfiles -u 1 \"src/**/*.json\" dist/",
-    "start": "node dist/cli.js",
+    "start": "node ./dist/cli/index.js",
     "prepublishOnly": "npm run build",
     "prepare": "npm run build"
   },
@@ -25,11 +25,11 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "@types/prompts": "^2.4.9",
-    "copyfiles": "^2.4.1",
-    "fe-toolkit": "github:VansonK/fe-toolkit#main",
-    "typescript": "^6.0.3"
+    "vitest": "^5.1.0"
   },
   "dependencies": {
-    "prompts": "^2.4.2"
+    "copyfiles": "^2.4.1",
+    "prompts": "^2.4.2",
+    "typescript": "^6.0.3"
   }
 }
