@@ -18,13 +18,25 @@ export interface GeneratedPropValue {
 }
 
 export interface UserActionModel {
-  kind: 'click';
+  kind: 'click' | 'type' | 'clear' | 'select' | 'submit';
   targetQuery: string;
+  queryBy?: 'role' | 'label' | 'placeholder' | 'text';
+  value?: string;
 }
 
 export interface AssertionModel {
-  kind: 'visible-text' | 'absent-text' | 'called' | 'disabled' | 'enabled';
+  kind:
+    | 'visible-text'
+    | 'absent-text'
+    | 'async-visible-text'
+    | 'called'
+    | 'called-with'
+    | 'disabled'
+    | 'enabled'
+    | 'item-count';
   target: string;
+  expectedArgs?: string[];
+  count?: number;
 }
 
 export interface TestScenarioModel {
@@ -33,6 +45,7 @@ export interface TestScenarioModel {
   arrangement: SetupModel[];
   actions: UserActionModel[];
   assertions: AssertionModel[];
+  mockOverrides?: MockBehaviorOverride[];
 }
 
 export interface TestFileModel {
@@ -43,4 +56,20 @@ export interface TestFileModel {
   setup: SetupModel[];
   scenarios: TestScenarioModel[];
   diagnostics: Diagnostic[];
+  moduleMocks: ModuleMockModel[];
+}
+
+export interface ModuleMockModel {
+  modulePath: string;
+  namedExports: Array<{
+    name: string;
+    kind: 'fn' | 'async-fn' | 'hook';
+    defaultReturnExpression?: string;
+  }>;
+}
+
+export interface MockBehaviorOverride {
+  exportName: string;
+  behavior: 'pending' | 'resolve' | 'reject';
+  valueExpression?: string;
 }

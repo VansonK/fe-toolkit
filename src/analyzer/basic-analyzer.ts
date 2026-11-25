@@ -8,6 +8,7 @@ import {
   type InteractionModel,
   type PropKind,
   type PropModel,
+  type StateModel,
 } from '../model/component-model.js';
 import { createDiagnostic, type Diagnostic } from '../model/diagnostic.js';
 
@@ -71,6 +72,7 @@ export function analyzeBasicComponent(sourceFile: ts.SourceFile): ComponentModel
       providers: [],
       asyncFlows: [],
       diagnostics,
+      lists: [],
     };
   }
 
@@ -80,7 +82,7 @@ export function analyzeBasicComponent(sourceFile: ts.SourceFile): ComponentModel
   const props = extractProps(params, typeMap, sourceFile, diagnostics);
 
   // 4. Scan body for hooks/state/effects unsupported in Basic mode
-  const state: string[] = [];
+  const state: StateModel[] = [];
   const effects: string[] = [];
   scanForUnsupportedHooks(body, state, effects, diagnostics);
 
@@ -104,6 +106,7 @@ export function analyzeBasicComponent(sourceFile: ts.SourceFile): ComponentModel
     providers: [],
     asyncFlows: [],
     diagnostics,
+    lists: [],
   };
 }
 
@@ -261,7 +264,7 @@ function classifyPropType(typeNode: ts.TypeNode): PropKind {
 
 function scanForUnsupportedHooks(
   node: ts.Node,
-  state: string[],
+  state: StateModel[],
   effects: string[],
   diagnostics: Diagnostic[]
 ): void {
@@ -269,7 +272,12 @@ function scanForUnsupportedHooks(
     if (ts.isCallExpression(current) && ts.isIdentifier(current.expression)) {
       const callee = current.expression.text;
       if (callee === 'useState' || callee === 'useReducer') {
-        state.push(callee);
+        state.push({
+          name: callee,
+          setterName: '',
+          initialValueExpression: 'unknown',
+          inferredType: 'unknown',
+        });
         diagnostics.push(
           createDiagnostic(
             'error',

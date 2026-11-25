@@ -171,6 +171,7 @@ export function planBasicScenarios(
       setup: [],
       scenarios,
       diagnostics: component.diagnostics,
+      moduleMocks: [],
     },
     diagnostics: component.diagnostics,
   };

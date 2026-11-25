@@ -7,9 +7,8 @@ import { runConfigCommand } from './commands/config.command';
 import { runCreateCommand } from './commands/create.command';
 import { runRenovateCommand } from './commands/renovate.command';
 import { runDoctorCommand } from './commands/doctor.command';
-import { runCreateTest, type CreateTestOptions } from './commands/create-test-command';
-import { runInspectComponent } from './commands/inspect-component-command';
-import type { ModeName, TestType } from '../model/component-model';
+import { runCreateTest, parseCreateTestArgs} from './commands/create-test-command';
+import { runInspectComponent, parseInspectComponentArgs } from './commands/inspect-component-command';
 import { showHelp } from './help';
 import { handleError } from '../core/errors';
 import { runConventionCheckCommand } from './commands/check-convention.command';
@@ -22,64 +21,6 @@ function getVersion(): string {
     } catch (err) {
         return 'unknown';
     }
-}
-
-function parseCreateTestArgs(args: string[]): CreateTestOptions | { error: string } {
-  const componentPath = args[0];
-  if (!componentPath || componentPath.startsWith('--')) {
-    return {
-      error:
-        'Component path is required.\nUsage: fe-toolkit create test <component-path> [--mode <basic|intermediate|advanced>] [--type <unit|integration>] [--output <path>] [--dry-run] [--force]',
-    };
-  }
-
-  const options: CreateTestOptions = { componentPath };
-
-  for (let i = 1; i < args.length; i++) {
-    const arg = args[i]!;
-    const [flag, inlineValue] = arg.split('=');
-
-    const readValue = (): string | undefined => {
-      if (inlineValue !== undefined) return inlineValue;
-      const next = args[i + 1];
-      if (next && !next.startsWith('--')) {
-        i++;
-        return next;
-      }
-      return undefined;
-    };
-
-    switch (flag) {
-      case '--mode': {
-        const val = readValue();
-        if (!val) return { error: 'Missing value for --mode.' };
-        options.mode = val as ModeName;
-        break;
-      }
-      case '--type': {
-        const val = readValue();
-        if (!val) return { error: 'Missing value for --type.' };
-        options.type = val as TestType;
-        break;
-      }
-      case '--output': {
-        const val = readValue();
-        if (!val) return { error: 'Missing value for --output.' };
-        options.output = val;
-        break;
-      }
-      case '--dry-run':
-        options.dryRun = true;
-        break;
-      case '--force':
-        options.force = true;
-        break;
-      default:
-        return { error: `Unknown option "${arg}" for "create test".` };
-    }
-  }
-
-  return options;
 }
 
 function main() {
@@ -130,20 +71,22 @@ function main() {
                 '  fe-toolkit create test <component-path> [options]'
             );
             process.exit(1);
-        case 'inspect': 
+        case 'inspect':
             if (subCommand === 'component') {
-                const targetPath = args[2];
-                if (!targetPath) {
-                console.error('Component path is required.\nUsage: fe-toolkit inspect component <component-path>');
-                process.exit(1);
+                const parsed = parseInspectComponentArgs(args.slice(2));
+                if ('error' in parsed) {
+                    console.error(parsed.error);
+                    process.exit(1);
                 }
-                const result = runInspectComponent(targetPath);
+                const result = runInspectComponent(parsed);
                 console.log(result.output);
                 process.exit(result.exitCode);
             }
 
-            console.error('Invalid inspect target. Usage: fe-toolkit inspect component <component-path>');
-            process.exit(1);        
+            console.error(
+                'Invalid inspect target. Usage: fe-toolkit inspect component <component-path> [--mode <basic|intermediate|advanced>] [--out <file-path>]'
+            );
+            process.exit(1);       
         case 'renovate':
             runRenovateCommand(args.slice(1));
             break;

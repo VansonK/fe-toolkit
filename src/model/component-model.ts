@@ -95,6 +95,16 @@ export interface ComponentModel {
   diagnostics: Diagnostic[];
 }
 
+export interface ConditionModel {
+  kind: 'logical-and' | 'ternary';
+  conditionProp: string;
+  renderedTag: string;
+  renderedText?: string;
+  boundProp?: string;
+  falseRenderedTag?: string;
+  falseRenderedText?: string;
+}
+
 export interface ModeProfile {
   name: ModeName;
   analyzers: string[];
